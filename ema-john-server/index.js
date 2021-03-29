@@ -12,6 +12,10 @@ app.use(cors());
 
 const port = 5000
 
+app.get('/', (req, res) => {
+    res.send('Hello Ema_John!')
+})
+
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const productsCollection = client.db("ema-john").collection("products");
@@ -61,16 +65,6 @@ client.connect(err => {
             })
     })
 
-
-
 });
-
-
-
-
-
-app.get('/', (req, res) => {
-    res.send('Hello Ema_John!')
-})
 
 app.listen(process.env.PORT || port)
