@@ -15,12 +15,14 @@ const port = 5000
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const productsCollection = client.db("ema-john").collection("products");
+    const ordersCollection = client.db("ema-john").collection("orders");
+
     console.log("DB connection OK");
 
     app.post('/addProduct', (req, res) => {
         const products = req.body;
         // console.log(product);
-        productsCollection.insertMany(products)
+        productsCollection.insertOne(products)
             .then(result => {
                 console.log(result.insertedCount);
                 res.send(result.insertedCount)
@@ -40,6 +42,25 @@ client.connect(err => {
                 res.send(documents[0]);
             })
     })
+
+    app.post('/productsByKeys', (req, res) => {
+        const productKeys = req.body;
+        productsCollection.find({ key: { $in: productKeys } })
+            .toArray((err, documents) => {
+                res.send(documents);
+            })
+    })
+
+    app.post('/addOrder', (req, res) => {
+        const order = req.body;
+        // console.log(product);
+        ordersCollection.insertOne(order)
+            .then(result => {
+                console.log(result.insertedCount);
+                res.send(result.insertedCount > 0)
+            })
+    })
+
 
 
 });
